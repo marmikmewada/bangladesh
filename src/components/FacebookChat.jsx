@@ -1,16 +1,14 @@
-// src/components/FacebookChat.js
 import React, { useEffect } from 'react';
 
 const FacebookChat = () => {
   useEffect(() => {
-    // Load the Facebook SDK asynchronously
+    // Function to load the Facebook SDK
     const loadFacebookSDK = () => {
-      // Check if the Facebook SDK script is already loaded
       if (window.FB) {
-        // Facebook SDK is already loaded, initialize it
+        // SDK already loaded, initialize
         initializeFB();
       } else {
-        // Facebook SDK is not loaded, load it and then initialize
+        // SDK not loaded, load it
         window.fbAsyncInit = initializeFB;
 
         (function(d, s, id) {
@@ -23,18 +21,29 @@ const FacebookChat = () => {
       }
     };
 
+    // Function to initialize Facebook SDK
     const initializeFB = () => {
       window.FB.init({
-        appId: process.env.REACT_APP_FACEBOOK_APP_ID, // Include the appId here
+        appId: process.env.REACT_APP_FACEBOOK_APP_ID,
         xfbml: true,
-        version: 'v15.0', // Ensure you use the latest or required version
+        version: 'v15.0',
       });
 
-      // Optionally customize the chat plugin settings
-      window.FB.CustomerChat.update({
-        logged_in_greeting: 'Hello! How can we assist you today?',
-        logged_out_greeting: 'Please log in to start chatting with us.',
-        ref: 'special_offer', // Custom reference parameter
+      // Ensure that CustomerChat is available
+      window.FB.getLoginStatus(function(response) {
+        if (response.status === 'connected') {
+          if (window.FB.CustomerChat) {
+            window.FB.CustomerChat.init({
+              app_id: process.env.REACT_APP_FACEBOOK_APP_ID,
+              logged_in_greeting: 'Hello! How can we assist you today?',
+              logged_out_greeting: 'Please log in to start chatting with us.',
+              theme_color: '#0084ff',
+              // Other customizations if needed
+            });
+          } else {
+            console.error('FB.CustomerChat is not available.');
+          }
+        }
       });
     };
 
@@ -46,7 +55,6 @@ const FacebookChat = () => {
       className="fb-customerchat"
       attribution="setup_tool"
       page_id={process.env.REACT_APP_FACEBOOK_PAGE_ID}
-      theme_color="#0084ff"
     ></div>
   );
 };
