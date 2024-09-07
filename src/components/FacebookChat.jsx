@@ -25,6 +25,7 @@ const FacebookChat = () => {
 
     const initializeFB = () => {
       window.FB.init({
+        appId: process.env.REACT_APP_FACEBOOK_APP_ID, // Include the appId here
         xfbml: true,
         version: 'v15.0', // Ensure you use the latest or required version
       });
